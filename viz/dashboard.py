@@ -67,7 +67,7 @@ def alert_panel(snapshot):
 
 
 def render(snapshot):
-    header = Text(f"Optimus actuator diagnostics  ·  t = {snapshot['elapsed_s']:.0f} s", style="bold")
+    header = Text(f"Starbot actuator diagnostics  ·  t = {snapshot['elapsed_s']:.0f} s", style="bold")
     faults = Text("injected: " + ("; ".join(snapshot["faults"]) or "none"), style="dim")
     return Group(header, faults, joint_table(snapshot), alert_panel(snapshot))
 

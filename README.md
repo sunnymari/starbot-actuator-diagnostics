@@ -1,9 +1,11 @@
 # Starbot actuator diagnostics
 
+[Live demo](https://starbot-actuator-diagnostics.vercel.app) · [GitHub](https://github.com/sunnymari/starbot-actuator-diagnostics)
+
 A live diagnostics demo for 28 simulated humanoid actuators, streaming real
 8-byte frames through python-can's virtual CAN bus. Pink Starbot shows where
 a problem is; grouped diagnostic trouble codes explain what happened and why.
-These are synthetic demo thresholds, not manufacturer or Tesla limits.
+These are synthetic demo thresholds, not manufacturer limits.
 
 ## Run
 
