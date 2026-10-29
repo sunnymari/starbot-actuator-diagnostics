@@ -7,6 +7,16 @@ A live diagnostics demo for 28 simulated humanoid actuators, streaming real
 a problem is; grouped diagnostic trouble codes explain what happened and why.
 These are synthetic demo thresholds, not manufacturer limits.
 
+## System at a glance
+
+```mermaid
+flowchart LR
+  Simulator --> Frames["8-byte CAN frames"] --> Decoder
+  Decoder --> Detector["Detector (rules.json)"]
+  Detector --> Snapshot
+  Snapshot --> Viewer["3D viewer"]
+```
+
 ## Run
 
 ```bash
