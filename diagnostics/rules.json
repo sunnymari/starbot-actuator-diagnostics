@@ -1,0 +1,14 @@
+{
+  "confirm_samples": 5,
+  "heal_samples": 20,
+  "heartbeat_timeout_ms": 500,
+  "connection_stale_ms": 1000,
+  "history_seconds": 10,
+  "rules": [
+    {"code":"C10001","rule":"OVERTEMP","field":"temperature_c","warning":50.0,"critical":65.0,"units":"°C","comparison":">"},
+    {"code":"C10002","rule":"OVERCURRENT","field":"current_a","warning":5.0,"critical":6.0,"units":"A","comparison":">"},
+    {"code":"C10003","rule":"POSITION ERROR","field":"position_error_deg","warning":1.5,"critical":3.0,"units":"deg","comparison":">","absolute":true},
+    {"code":"C10004","rule":"UNDERVOLTAGE","field":"voltage_v","warning":44.0,"critical":40.0,"units":"V","comparison":"<"}
+  ],
+  "heartbeat":{"code":"C10005","rule":"TIMEOUT","units":"ms","comparison":">"}
+}

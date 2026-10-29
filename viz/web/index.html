@@ -3,228 +3,60 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Actuator Diagnostics 3D</title>
-  <style>
-    :root { --bg: #fff5fa; --panel: #ffffffd9; --ink: #4a2c3d; --muted: #9a7489; --border: #f6c6dc;
-            --ok: #5cc98a; --warn: #f0b429; --crit: #e5484d; }
-    * { box-sizing: border-box; }
-    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink);
-                 font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-    #scene { position: fixed; inset: 0; }
-    .panel { position: fixed; background: var(--panel); border: 2px solid var(--border);
-             border-radius: 16px; padding: 12px 14px; backdrop-filter: blur(6px); }
-    #title { top: 16px; left: 16px; }
-    #title h1 { margin: 0; font-size: 18px; }
-    #title p { margin: 2px 0 0; color: var(--muted); }
-    #alerts { top: 16px; right: 16px; width: min(420px, calc(100vw - 32px)); max-height: 45vh; overflow: auto; }
-    #alerts h2, #detail h2 { margin: 0 0 6px; font-size: 14px; }
-    #alerts ul { list-style: none; margin: 0; padding: 0; font: 12px/1.5 ui-monospace, Menlo, monospace; }
-    #alerts .WARNING { color: #b7791f; } #alerts .CRITICAL { color: var(--crit); }
-    #detail { bottom: 16px; left: 16px; min-width: 240px; font: 12px/1.6 ui-monospace, Menlo, monospace; }
-    #legend { bottom: 16px; right: 16px; display: flex; gap: 12px; }
-    .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; }
-    .muted { color: var(--muted); }
-    @media (max-width: 640px) { #alerts { top: auto; bottom: 120px; max-height: 30vh; } #legend { display: none; } }
-  </style>
+  <title>Starbot · Actuator diagnostics</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="viewer.css" />
   <script type="importmap">
-    { "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-    } }
+    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
   </script>
 </head>
 <body>
-  <div id="scene"></div>
-  <div id="title" class="panel"><h1>Optimus actuator diagnostics</h1><p id="clock">connecting…</p></div>
-  <div id="alerts" class="panel"><h2>Alerts</h2><ul id="alert-list"><li class="muted">none yet</li></ul></div>
-  <div id="detail" class="panel"><span class="muted">hover a joint</span></div>
-  <div id="legend" class="panel">
-    <span><span class="dot" style="background:var(--ok)"></span>OK</span>
-    <span><span class="dot" style="background:var(--warn)"></span>Warning</span>
-    <span><span class="dot" style="background:var(--crit)"></span>Critical</span>
+  <main id="scene" aria-label="Interactive robot: click a joint marker or use the joint selector"></main>
+  <header id="title" class="panel">
+    <div id="bus-label" class="eyebrow">LIVE CAN BUS · 28 ACTUATORS</div>
+    <h1>Starbot diagnostics</h1>
+    <p id="clock">Connecting to the simulator…</p>
+    <p id="runtime-note" class="muted small">Python simulator · virtual CAN</p>
+    <p class="muted small" id="performance">Synthetic demo · limits in diagnostics/rules.json</p>
+  </header>
+  <div id="stale-banner" role="status" hidden></div>
+  <section id="detail" class="panel" aria-label="Selected actuator">
+    <label for="joint-select" class="eyebrow">INSPECT ACTUATOR</label>
+    <select id="joint-select" aria-label="Select joint"></select>
+    <div id="reading-detail"><p>Waiting for telemetry…</p></div>
+    <div id="dtc-detail"></div>
+    <button disabled id="clear-dtc" class="secondary">Clear selected DTCs · 0x14</button>
+    <p class="muted small">A present fault will re-pend and confirm. Reset injections to let it heal.</p>
+    <div class="charts">
+      <canvas id="temp-chart" width="520" height="140" aria-label="Temperature over the last 10 seconds"></canvas>
+      <canvas id="current-chart" width="520" height="140" aria-label="Current over the last 10 seconds"></canvas>
+    </div>
+  </section>
+  <section id="alerts" class="panel">
+    <div class="section-heading"><h2>Diagnostic events</h2><span id="event-count" class="muted small">0 codes</span></div>
+    <p class="muted small">One row per actuator + code · click to inspect</p>
+    <div id="alert-list" aria-label="Grouped diagnostic events"><p class="muted">No DTCs. Inject a fault to begin.</p></div>
+  </section>
+  <section id="controls" class="panel">
+    <h2>Demo controls</h2>
+    <p id="control-target" class="muted small">Selected: left knee</p>
+    <div class="button-grid">
+      <button disabled data-fault="overcurrent">Overcurrent spike</button>
+      <button disabled data-fault="overtemp">Overtemp ramp</button>
+      <button disabled data-fault="encoder">Encoder drift</button>
+      <button disabled data-fault="heartbeat">Drop heartbeat</button>
+    </div>
+    <button id="transport-toggle" class="secondary" hidden>Pause connection</button>
+    <button disabled id="reset" class="secondary">Reset all injections</button>
+    <p id="command-status" role="status" class="small muted">Controls change simulator values before CAN encoding.</p>
+    <p id="injections" class="small muted">No injections</p>
+  </section>
+  <div id="legend" class="panel" aria-label="Status legend">
+    <span><i style="background:#5cc98a"></i>OK</span>
+    <span><i style="background:#f0b429"></i>Warning / pending</span>
+    <span><i style="background:#e5484d"></i>Critical</span>
+    <span><i class="hollow"></i>No heartbeat / stale</span>
   </div>
-
-  <script type="module">
-    import * as THREE from "three";
-    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-    import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-
-    // Placeholder joint positions (metres). +x is the robot's left, since it faces the camera.
-    // A Blender model replaces these: name an Empty or bone after each joint (e.g. "left_knee").
-    const SIDE_JOINTS = {
-      shoulder_pitch: [0.22, 1.42], shoulder_roll: [0.27, 1.42], shoulder_yaw: [0.30, 1.33],
-      elbow: [0.32, 1.15], wrist_pitch: [0.33, 0.96], wrist_roll: [0.33, 0.90],
-      hip_pitch: [0.10, 0.90], hip_roll: [0.13, 0.86], hip_yaw: [0.12, 0.81],
-      knee: [0.12, 0.50], ankle_pitch: [0.12, 0.12], ankle_roll: [0.12, 0.07],
-    };
-    const CENTER_JOINTS = { neck_pitch: [0, 1.56], neck_yaw: [0, 1.62], torso_pitch: [0, 1.00], torso_yaw: [0, 1.10] };
-    const STATUS_COLOR = { OK: 0x5cc98a, WARNING: 0xf0b429, CRITICAL: 0xe5484d, UNKNOWN: 0xb9a7b2 };
-
-    const container = document.getElementById("scene");
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-    container.appendChild(renderer.domElement);
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(40, 1, 0.05, 50);
-    camera.position.set(0.9, 1.4, 3.1);
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.target.set(0, 0.95, 0);
-    controls.enableDamping = true;
-
-    scene.add(new THREE.HemisphereLight(0xffffff, 0xf3d5e4, 2.2));
-    const sun = new THREE.DirectionalLight(0xffffff, 1.4);
-    sun.position.set(2, 4, 3);
-    scene.add(sun);
-    const floor = new THREE.Mesh(new THREE.CircleGeometry(1.2, 48), new THREE.MeshStandardMaterial({ color: 0xffe3ef }));
-    floor.rotation.x = -Math.PI / 2;
-    scene.add(floor);
-
-    function resize() {
-      renderer.setSize(innerWidth, innerHeight);
-      camera.aspect = innerWidth / innerHeight;
-      camera.updateProjectionMatrix();
-    }
-    addEventListener("resize", resize);
-    resize();
-
-    // ---- joint markers -------------------------------------------------------
-    const markers = new Map(); // joint name -> sphere mesh
-    const markerGeometry = new THREE.SphereGeometry(0.036, 24, 16);
-
-    function addMarker(name, position) {
-      const mesh = new THREE.Mesh(markerGeometry, new THREE.MeshStandardMaterial({
-        color: STATUS_COLOR.UNKNOWN, emissive: STATUS_COLOR.UNKNOWN, emissiveIntensity: 0.25 }));
-      mesh.position.copy(position);
-      mesh.userData.joint = name;
-      scene.add(mesh);
-      markers.set(name, mesh);
-    }
-
-    function placeholderPositions() {
-      const positions = {};
-      for (const [joint, [x, y]] of Object.entries(SIDE_JOINTS)) {
-        positions[`left_${joint}`] = new THREE.Vector3(x, y, 0.1);
-        positions[`right_${joint}`] = new THREE.Vector3(-x, y, 0.1);
-      }
-      for (const [joint, [x, y]] of Object.entries(CENTER_JOINTS)) positions[joint] = new THREE.Vector3(x, y, 0.12);
-      return positions;
-    }
-
-    // ---- placeholder robot ---------------------------------------------------
-    function limb(a, b, radius, material) {
-      const start = new THREE.Vector3(...a), end = new THREE.Vector3(...b);
-      const mesh = new THREE.Mesh(new THREE.CapsuleGeometry(radius, start.distanceTo(end), 6, 16), material);
-      mesh.position.copy(start).add(end).multiplyScalar(0.5);
-      mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), end.clone().sub(start).normalize());
-      return mesh;
-    }
-
-    function buildPlaceholderRobot() {
-      const shell = new THREE.MeshStandardMaterial({ color: 0xf4f1f3, roughness: 0.45 });
-      const dark = new THREE.MeshStandardMaterial({ color: 0x3b3340, roughness: 0.6 });
-      const robot = new THREE.Group();
-      const torso = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.5, 0.2), shell);
-      torso.position.set(0, 1.2, 0);
-      const pelvis = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.14, 0.18), dark);
-      pelvis.position.set(0, 0.9, 0);
-      const head = new THREE.Mesh(new THREE.SphereGeometry(0.11, 32, 24), shell);
-      head.scale.set(1, 1.15, 1);
-      head.position.set(0, 1.76, 0);
-      const visor = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.05, 0.02), dark);
-      visor.position.set(0, 1.78, 0.105);
-      robot.add(torso, pelvis, head, visor, limb([0, 1.45, 0], [0, 1.62, 0], 0.04, dark));
-      for (const s of [1, -1]) {
-        robot.add(
-          limb([s * 0.27, 1.42, 0], [s * 0.32, 1.15, 0], 0.045, shell),  // upper arm
-          limb([s * 0.32, 1.15, 0], [s * 0.33, 0.93, 0], 0.038, shell),  // forearm
-          limb([s * 0.12, 0.84, 0], [s * 0.12, 0.50, 0], 0.06, shell),   // thigh
-          limb([s * 0.12, 0.50, 0], [s * 0.12, 0.12, 0], 0.05, shell),   // shin
-        );
-        const foot = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.05, 0.22), dark);
-        foot.position.set(s * 0.12, 0.03, 0.04);
-        robot.add(foot);
-      }
-      scene.add(robot);
-      for (const [name, position] of Object.entries(placeholderPositions())) addMarker(name, position);
-    }
-
-    // ---- Blender model (viz/web/robot.glb), if there is one ------------------
-    async function loadModel() {
-      const head = await fetch("robot.glb", { method: "HEAD" }).catch(() => null);
-      if (!head || !head.ok) return false;
-      const gltf = await new GLTFLoader().loadAsync("robot.glb");
-      scene.add(gltf.scene);
-      gltf.scene.updateMatrixWorld(true);
-      const fallback = placeholderPositions();
-      for (const name of Object.keys(fallback)) {
-        const node = gltf.scene.getObjectByName(name);
-        addMarker(name, node ? node.getWorldPosition(new THREE.Vector3()) : fallback[name]);
-        if (!node) console.warn(`robot.glb has no object named "${name}", using the placeholder position`);
-      }
-      return true;
-    }
-
-    if (!(await loadModel())) buildPlaceholderRobot();
-
-    // ---- live state ----------------------------------------------------------
-    let state = { joints: [] };
-    const byName = () => Object.fromEntries(state.joints.map(j => [j.name, j]));
-
-    async function poll() {
-      try {
-        state = await (await fetch("/state", { cache: "no-store" })).json();
-        document.getElementById("clock").textContent =
-          `t = ${state.elapsed_s.toFixed(0)} s · ${state.joints.filter(j => j.status !== "OK").length} joints flagged`;
-        const list = document.getElementById("alert-list");
-        list.innerHTML = state.log.length
-          ? state.log.slice().reverse().map(e => `<li class="${e.severity}">${e.t.toFixed(1)}s ${e.text}</li>`).join("")
-          : `<li class="muted">none yet (the checks in diagnostics/detector.py return them)</li>`;
-        const joints = byName();
-        for (const [name, mesh] of markers) {
-          const color = STATUS_COLOR[joints[name]?.status ?? "UNKNOWN"];
-          mesh.material.color.setHex(color);
-          mesh.material.emissive.setHex(color);
-        }
-      } catch {
-        document.getElementById("clock").textContent = "lost connection to python -m viz.server";
-      }
-    }
-    setInterval(poll, 250);
-    poll();
-
-    // ---- hover details -------------------------------------------------------
-    const raycaster = new THREE.Raycaster(), pointer = new THREE.Vector2();
-    let hovered = null;
-    renderer.domElement.addEventListener("pointermove", (event) => {
-      pointer.set((event.clientX / innerWidth) * 2 - 1, -(event.clientY / innerHeight) * 2 + 1);
-      raycaster.setFromCamera(pointer, camera);
-      hovered = raycaster.intersectObjects([...markers.values()])[0]?.object.userData.joint ?? hovered;
-    });
-
-    function showDetail() {
-      const j = byName()[hovered];
-      if (!j) return;
-      const fmt = (v, d) => (v == null ? "—" : v.toFixed(d));
-      document.getElementById("detail").innerHTML =
-        `<h2>${j.name} <span class="muted">0x${j.can_id.toString(16).toUpperCase()}</span></h2>` +
-        `status&nbsp;&nbsp; ${j.status}<br>temp&nbsp;&nbsp;&nbsp;&nbsp; ${fmt(j.temperature_c, 1)} °C<br>` +
-        `current&nbsp; ${fmt(j.current_a, 2)} A<br>pos err&nbsp; ${fmt(j.position_error_deg, 2)}°<br>` +
-        `voltage&nbsp; ${fmt(j.voltage_v, 1)} V<br>last&nbsp;&nbsp;&nbsp;&nbsp; ${j.age_s == null ? "—" : (j.age_s * 1000).toFixed(0) + " ms ago"}`;
-    }
-
-    renderer.setAnimationLoop((time) => {
-      const joints = byName();
-      for (const [name, mesh] of markers) {
-        const status = joints[name]?.status;
-        const pulse = status === "CRITICAL" ? 1 + 0.35 * Math.sin(time / 120) : status === "WARNING" ? 1.15 : 1;
-        mesh.scale.setScalar(name === hovered ? pulse * 1.4 : pulse);
-        mesh.material.emissiveIntensity = status && status !== "OK" ? 0.8 : 0.25;
-      }
-      showDetail();
-      controls.update();
-      renderer.render(scene, camera);
-    });
-  </script>
+  <script type="module" src="viewer.mjs"></script>
 </body>
 </html>

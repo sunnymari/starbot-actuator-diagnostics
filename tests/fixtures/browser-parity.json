@@ -1,0 +1,3221 @@
+{
+  "config": {
+    "confirm_samples": 5,
+    "heal_samples": 20,
+    "heartbeat_timeout_ms": 500,
+    "connection_stale_ms": 1000,
+    "history_seconds": 10,
+    "rules": [
+      {
+        "code": "C10001",
+        "rule": "OVERTEMP",
+        "field": "temperature_c",
+        "warning": 50.0,
+        "critical": 65.0,
+        "units": "\u00b0C",
+        "comparison": ">"
+      },
+      {
+        "code": "C10002",
+        "rule": "OVERCURRENT",
+        "field": "current_a",
+        "warning": 5.0,
+        "critical": 6.0,
+        "units": "A",
+        "comparison": ">"
+      },
+      {
+        "code": "C10003",
+        "rule": "POSITION ERROR",
+        "field": "position_error_deg",
+        "warning": 1.5,
+        "critical": 3.0,
+        "units": "deg",
+        "comparison": ">",
+        "absolute": true
+      },
+      {
+        "code": "C10004",
+        "rule": "UNDERVOLTAGE",
+        "field": "voltage_v",
+        "warning": 44.0,
+        "critical": 40.0,
+        "units": "V",
+        "comparison": "<"
+      }
+    ],
+    "heartbeat": {
+      "code": "C10005",
+      "rule": "TIMEOUT",
+      "units": "ms",
+      "comparison": ">"
+    }
+  },
+  "joints": [
+    {
+      "name": "left_shoulder_pitch",
+      "can_id": 256
+    },
+    {
+      "name": "right_shoulder_pitch",
+      "can_id": 257
+    },
+    {
+      "name": "left_shoulder_roll",
+      "can_id": 258
+    },
+    {
+      "name": "right_shoulder_roll",
+      "can_id": 259
+    },
+    {
+      "name": "left_shoulder_yaw",
+      "can_id": 260
+    },
+    {
+      "name": "right_shoulder_yaw",
+      "can_id": 261
+    },
+    {
+      "name": "left_elbow",
+      "can_id": 262
+    },
+    {
+      "name": "right_elbow",
+      "can_id": 263
+    },
+    {
+      "name": "left_wrist_pitch",
+      "can_id": 264
+    },
+    {
+      "name": "right_wrist_pitch",
+      "can_id": 265
+    },
+    {
+      "name": "left_wrist_roll",
+      "can_id": 266
+    },
+    {
+      "name": "right_wrist_roll",
+      "can_id": 267
+    },
+    {
+      "name": "left_hip_pitch",
+      "can_id": 268
+    },
+    {
+      "name": "right_hip_pitch",
+      "can_id": 269
+    },
+    {
+      "name": "left_hip_roll",
+      "can_id": 270
+    },
+    {
+      "name": "right_hip_roll",
+      "can_id": 271
+    },
+    {
+      "name": "left_hip_yaw",
+      "can_id": 272
+    },
+    {
+      "name": "right_hip_yaw",
+      "can_id": 273
+    },
+    {
+      "name": "left_knee",
+      "can_id": 274
+    },
+    {
+      "name": "right_knee",
+      "can_id": 275
+    },
+    {
+      "name": "left_ankle_pitch",
+      "can_id": 276
+    },
+    {
+      "name": "right_ankle_pitch",
+      "can_id": 277
+    },
+    {
+      "name": "left_ankle_roll",
+      "can_id": 278
+    },
+    {
+      "name": "right_ankle_roll",
+      "can_id": 279
+    },
+    {
+      "name": "neck_pitch",
+      "can_id": 280
+    },
+    {
+      "name": "neck_yaw",
+      "can_id": 281
+    },
+    {
+      "name": "torso_pitch",
+      "can_id": 282
+    },
+    {
+      "name": "torso_yaw",
+      "can_id": 283
+    }
+  ],
+  "cases": [
+    {
+      "name": "critical-confirm",
+      "actions": [
+        {
+          "action": "sample",
+          "t": 0.1,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8.5,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.2,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8.5,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.3,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8.5,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.4,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8.5,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.5,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8.5,
+            0,
+            48
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "code": "C10002",
+          "actuator_id": "ACT-L-KNEE-112",
+          "joint": "left_knee",
+          "rule": "OVERCURRENT",
+          "threshold": 6.0,
+          "value_at_trigger": 8.5,
+          "units": "A",
+          "first_seen_s": 0.1,
+          "last_seen_s": 0.5,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": {
+            "t": 0.5,
+            "temperature_c": 35.0,
+            "current_a": 8.5,
+            "position_error_deg": 0.0,
+            "voltage_v": 48.0
+          },
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 0.5,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 8.5
+        }
+      ]
+    },
+    {
+      "name": "interrupted-debounce",
+      "actions": [
+        {
+          "action": "sample",
+          "t": 0.1,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.2,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.3,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.4,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.5,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.6,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.7,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.8,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.9,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "code": "C10002",
+          "actuator_id": "ACT-L-KNEE-112",
+          "joint": "left_knee",
+          "rule": "OVERCURRENT",
+          "threshold": 6.0,
+          "value_at_trigger": 8.0,
+          "units": "A",
+          "first_seen_s": 0.1,
+          "last_seen_s": 0.9,
+          "occurrences": 8,
+          "state": "PENDING",
+          "freeze_frame": null,
+          "severity": "WARNING",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 4,
+          "critical_samples": 4,
+          "good_samples": 0,
+          "confirmed_at_s": null,
+          "healed_at_s": null,
+          "confirmed_after_samples": 0,
+          "last_value": 8.0
+        }
+      ]
+    },
+    {
+      "name": "heal-and-recur",
+      "actions": [
+        {
+          "action": "sample",
+          "t": 0.1,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.2,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.3,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.4,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.5,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.6,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.7,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.8,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.9,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.0,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.1,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.2,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.3,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.4,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.5,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.6,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.7,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.8,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.9,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 2.0,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 2.1,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 2.2,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 2.3,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 2.4,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 2.5,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 2.6,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 2.7,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 2.8,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 2.9,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 3.0,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "code": "C10002",
+          "actuator_id": "ACT-L-KNEE-112",
+          "joint": "left_knee",
+          "rule": "OVERCURRENT",
+          "threshold": 6.0,
+          "value_at_trigger": 8.0,
+          "units": "A",
+          "first_seen_s": 0.1,
+          "last_seen_s": 3.0,
+          "occurrences": 10,
+          "state": "CONFIRMED",
+          "freeze_frame": {
+            "t": 3.0,
+            "temperature_c": 35.0,
+            "current_a": 8.0,
+            "position_error_deg": 0.0,
+            "voltage_v": 48.0
+          },
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 3.0,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 8.0
+        }
+      ]
+    },
+    {
+      "name": "warning-critical-escalation",
+      "actions": [
+        {
+          "action": "sample",
+          "t": 0.1,
+          "joint": "left_knee",
+          "values": [
+            35,
+            5.5,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.2,
+          "joint": "left_knee",
+          "values": [
+            35,
+            5.5,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.3,
+          "joint": "left_knee",
+          "values": [
+            35,
+            5.5,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.4,
+          "joint": "left_knee",
+          "values": [
+            35,
+            5.5,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.5,
+          "joint": "left_knee",
+          "values": [
+            35,
+            5.5,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.6,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.7,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.8,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.9,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.0,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.1,
+          "joint": "left_knee",
+          "values": [
+            35,
+            5.5,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.2,
+          "joint": "left_knee",
+          "values": [
+            35,
+            5.5,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.3,
+          "joint": "left_knee",
+          "values": [
+            35,
+            5.5,
+            0,
+            48
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "code": "C10002",
+          "actuator_id": "ACT-L-KNEE-112",
+          "joint": "left_knee",
+          "rule": "OVERCURRENT",
+          "threshold": 6.0,
+          "value_at_trigger": 8.0,
+          "units": "A",
+          "first_seen_s": 0.1,
+          "last_seen_s": 1.3,
+          "occurrences": 13,
+          "state": "CONFIRMED",
+          "freeze_frame": {
+            "t": 1.0,
+            "temperature_c": 35.0,
+            "current_a": 8.0,
+            "position_error_deg": 0.0,
+            "voltage_v": 48.0
+          },
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 13,
+          "critical_samples": 0,
+          "good_samples": 0,
+          "confirmed_at_s": 1.0,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 5.5
+        }
+      ]
+    },
+    {
+      "name": "four-sensor-rules",
+      "actions": [
+        {
+          "action": "sample",
+          "t": 0.1,
+          "joint": "left_knee",
+          "values": [
+            70,
+            8,
+            -4,
+            38
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.2,
+          "joint": "left_knee",
+          "values": [
+            70,
+            8,
+            -4,
+            38
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.3,
+          "joint": "left_knee",
+          "values": [
+            70,
+            8,
+            -4,
+            38
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.4,
+          "joint": "left_knee",
+          "values": [
+            70,
+            8,
+            -4,
+            38
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.5,
+          "joint": "left_knee",
+          "values": [
+            70,
+            8,
+            -4,
+            38
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "code": "C10001",
+          "actuator_id": "ACT-L-KNEE-112",
+          "joint": "left_knee",
+          "rule": "OVERTEMP",
+          "threshold": 65.0,
+          "value_at_trigger": 70.0,
+          "units": "\u00b0C",
+          "first_seen_s": 0.1,
+          "last_seen_s": 0.5,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": {
+            "t": 0.5,
+            "temperature_c": 70.0,
+            "current_a": 8.0,
+            "position_error_deg": -4.0,
+            "voltage_v": 38.0
+          },
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 0.5,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 70.0
+        },
+        {
+          "code": "C10002",
+          "actuator_id": "ACT-L-KNEE-112",
+          "joint": "left_knee",
+          "rule": "OVERCURRENT",
+          "threshold": 6.0,
+          "value_at_trigger": 8.0,
+          "units": "A",
+          "first_seen_s": 0.1,
+          "last_seen_s": 0.5,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": {
+            "t": 0.5,
+            "temperature_c": 70.0,
+            "current_a": 8.0,
+            "position_error_deg": -4.0,
+            "voltage_v": 38.0
+          },
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 0.5,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 8.0
+        },
+        {
+          "code": "C10003",
+          "actuator_id": "ACT-L-KNEE-112",
+          "joint": "left_knee",
+          "rule": "POSITION ERROR",
+          "threshold": 3.0,
+          "value_at_trigger": 4.0,
+          "units": "deg",
+          "first_seen_s": 0.1,
+          "last_seen_s": 0.5,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": {
+            "t": 0.5,
+            "temperature_c": 70.0,
+            "current_a": 8.0,
+            "position_error_deg": -4.0,
+            "voltage_v": 38.0
+          },
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": true,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 0.5,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 4.0
+        },
+        {
+          "code": "C10004",
+          "actuator_id": "ACT-L-KNEE-112",
+          "joint": "left_knee",
+          "rule": "UNDERVOLTAGE",
+          "threshold": 40.0,
+          "value_at_trigger": 38.0,
+          "units": "V",
+          "first_seen_s": 0.1,
+          "last_seen_s": 0.5,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": {
+            "t": 0.5,
+            "temperature_c": 70.0,
+            "current_a": 8.0,
+            "position_error_deg": -4.0,
+            "voltage_v": 38.0
+          },
+          "severity": "CRITICAL",
+          "comparison": "<",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 0.5,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 38.0
+        }
+      ]
+    },
+    {
+      "name": "strict-boundaries",
+      "actions": [
+        {
+          "action": "sample",
+          "t": 0.1,
+          "joint": "left_knee",
+          "values": [
+            50,
+            5,
+            -1.5,
+            44
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.2,
+          "joint": "left_knee",
+          "values": [
+            50,
+            5,
+            -1.5,
+            44
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.3,
+          "joint": "left_knee",
+          "values": [
+            50,
+            5,
+            -1.5,
+            44
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.4,
+          "joint": "left_knee",
+          "values": [
+            50,
+            5,
+            -1.5,
+            44
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.5,
+          "joint": "left_knee",
+          "values": [
+            50,
+            5,
+            -1.5,
+            44
+          ]
+        }
+      ],
+      "expected": []
+    },
+    {
+      "name": "clear-reconfirm",
+      "actions": [
+        {
+          "action": "sample",
+          "t": 0.1,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.2,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.3,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.4,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.5,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "clear",
+          "joint": "left_knee"
+        },
+        {
+          "action": "sample",
+          "t": 0.6,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.7,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.8,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.9,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.0,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "code": "C10002",
+          "actuator_id": "ACT-L-KNEE-112",
+          "joint": "left_knee",
+          "rule": "OVERCURRENT",
+          "threshold": 6.0,
+          "value_at_trigger": 8.0,
+          "units": "A",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.0,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": {
+            "t": 1.0,
+            "temperature_c": 35.0,
+            "current_a": 8.0,
+            "position_error_deg": 0.0,
+            "voltage_v": 48.0
+          },
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.0,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 8.0
+        }
+      ]
+    },
+    {
+      "name": "timeout",
+      "actions": [
+        {
+          "action": "sample",
+          "t": 0.1,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "timeout",
+          "t": 0.6
+        },
+        {
+          "action": "timeout",
+          "t": 0.61
+        },
+        {
+          "action": "timeout",
+          "t": 0.71
+        },
+        {
+          "action": "timeout",
+          "t": 0.81
+        },
+        {
+          "action": "timeout",
+          "t": 0.91
+        },
+        {
+          "action": "timeout",
+          "t": 1.01
+        }
+      ],
+      "expected": [
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-C-NECK-PITCH-118",
+          "joint": "neck_pitch",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-C-NECK-YAW-119",
+          "joint": "neck_yaw",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-C-TORSO-PITCH-11A",
+          "joint": "torso_pitch",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-C-TORSO-YAW-11B",
+          "joint": "torso_yaw",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-ANKLE-PITCH-114",
+          "joint": "left_ankle_pitch",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-ANKLE-ROLL-116",
+          "joint": "left_ankle_roll",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-ELBOW-106",
+          "joint": "left_elbow",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-HIP-PITCH-10C",
+          "joint": "left_hip_pitch",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-HIP-ROLL-10E",
+          "joint": "left_hip_roll",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-HIP-YAW-110",
+          "joint": "left_hip_yaw",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-KNEE-112",
+          "joint": "left_knee",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": {
+            "t": 0.1,
+            "temperature_c": 35.0,
+            "current_a": 3.0,
+            "position_error_deg": 0.0,
+            "voltage_v": 48.0
+          },
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 910.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-SHOULDER-PITCH-100",
+          "joint": "left_shoulder_pitch",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-SHOULDER-ROLL-102",
+          "joint": "left_shoulder_roll",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-SHOULDER-YAW-104",
+          "joint": "left_shoulder_yaw",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-WRIST-PITCH-108",
+          "joint": "left_wrist_pitch",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-WRIST-ROLL-10A",
+          "joint": "left_wrist_roll",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-ANKLE-PITCH-115",
+          "joint": "right_ankle_pitch",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-ANKLE-ROLL-117",
+          "joint": "right_ankle_roll",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-ELBOW-107",
+          "joint": "right_elbow",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-HIP-PITCH-10D",
+          "joint": "right_hip_pitch",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-HIP-ROLL-10F",
+          "joint": "right_hip_roll",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-HIP-YAW-111",
+          "joint": "right_hip_yaw",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-KNEE-113",
+          "joint": "right_knee",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-SHOULDER-PITCH-101",
+          "joint": "right_shoulder_pitch",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-SHOULDER-ROLL-103",
+          "joint": "right_shoulder_roll",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-SHOULDER-YAW-105",
+          "joint": "right_shoulder_yaw",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-WRIST-PITCH-109",
+          "joint": "right_wrist_pitch",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-WRIST-ROLL-10B",
+          "joint": "right_wrist_roll",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.6,
+          "last_seen_s": 1.01,
+          "occurrences": 6,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 6,
+          "critical_samples": 6,
+          "good_samples": 0,
+          "confirmed_at_s": 0.91,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        }
+      ]
+    },
+    {
+      "name": "timeout-recovery",
+      "actions": [
+        {
+          "action": "sample",
+          "t": 0.1,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "timeout",
+          "t": 0.61
+        },
+        {
+          "action": "timeout",
+          "t": 0.71
+        },
+        {
+          "action": "timeout",
+          "t": 0.81
+        },
+        {
+          "action": "timeout",
+          "t": 0.91
+        },
+        {
+          "action": "timeout",
+          "t": 1.01
+        },
+        {
+          "action": "sample",
+          "t": 1.11,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.21,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.31,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.41,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.51,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.61,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.71,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.81,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.91,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 2.01,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 2.11,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 2.21,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 2.31,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 2.41,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 2.51,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 2.61,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 2.71,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 2.81,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 2.91,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 3.01,
+          "joint": "left_knee",
+          "values": [
+            35,
+            3,
+            0,
+            48
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-C-NECK-PITCH-118",
+          "joint": "neck_pitch",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-C-NECK-YAW-119",
+          "joint": "neck_yaw",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-C-TORSO-PITCH-11A",
+          "joint": "torso_pitch",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-C-TORSO-YAW-11B",
+          "joint": "torso_yaw",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-ANKLE-PITCH-114",
+          "joint": "left_ankle_pitch",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-ANKLE-ROLL-116",
+          "joint": "left_ankle_roll",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-ELBOW-106",
+          "joint": "left_elbow",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-HIP-PITCH-10C",
+          "joint": "left_hip_pitch",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-HIP-ROLL-10E",
+          "joint": "left_hip_roll",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-HIP-YAW-110",
+          "joint": "left_hip_yaw",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-SHOULDER-PITCH-100",
+          "joint": "left_shoulder_pitch",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-SHOULDER-ROLL-102",
+          "joint": "left_shoulder_roll",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-SHOULDER-YAW-104",
+          "joint": "left_shoulder_yaw",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-WRIST-PITCH-108",
+          "joint": "left_wrist_pitch",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-WRIST-ROLL-10A",
+          "joint": "left_wrist_roll",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-ANKLE-PITCH-115",
+          "joint": "right_ankle_pitch",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-ANKLE-ROLL-117",
+          "joint": "right_ankle_roll",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-ELBOW-107",
+          "joint": "right_elbow",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-HIP-PITCH-10D",
+          "joint": "right_hip_pitch",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-HIP-ROLL-10F",
+          "joint": "right_hip_roll",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-HIP-YAW-111",
+          "joint": "right_hip_yaw",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-KNEE-113",
+          "joint": "right_knee",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-SHOULDER-PITCH-101",
+          "joint": "right_shoulder_pitch",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-SHOULDER-ROLL-103",
+          "joint": "right_shoulder_roll",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-SHOULDER-YAW-105",
+          "joint": "right_shoulder_yaw",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-WRIST-PITCH-109",
+          "joint": "right_wrist_pitch",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-R-WRIST-ROLL-10B",
+          "joint": "right_wrist_roll",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 1010.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": null,
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 5,
+          "critical_samples": 5,
+          "good_samples": 0,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 1010.0
+        },
+        {
+          "code": "C10005",
+          "actuator_id": "ACT-L-KNEE-112",
+          "joint": "left_knee",
+          "rule": "TIMEOUT",
+          "threshold": 500,
+          "value_at_trigger": 910.0,
+          "units": "ms",
+          "first_seen_s": 0.61,
+          "last_seen_s": 1.01,
+          "occurrences": 5,
+          "state": "HEALED",
+          "freeze_frame": {
+            "t": 0.1,
+            "temperature_c": 35.0,
+            "current_a": 3.0,
+            "position_error_deg": 0.0,
+            "voltage_v": 48.0
+          },
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 0,
+          "critical_samples": 0,
+          "good_samples": 20,
+          "confirmed_at_s": 1.01,
+          "healed_at_s": 3.01,
+          "confirmed_after_samples": 5,
+          "last_value": 0
+        }
+      ]
+    },
+    {
+      "name": "grouped-joints",
+      "actions": [
+        {
+          "action": "sample",
+          "t": 0.1,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.2,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.3,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.4,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.5,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.6,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.7,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.8,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 0.9,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.0,
+          "joint": "left_knee",
+          "values": [
+            35,
+            8,
+            0,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.1,
+          "joint": "neck_yaw",
+          "values": [
+            35,
+            3,
+            2,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.2,
+          "joint": "neck_yaw",
+          "values": [
+            35,
+            3,
+            2,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.3,
+          "joint": "neck_yaw",
+          "values": [
+            35,
+            3,
+            2,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.4,
+          "joint": "neck_yaw",
+          "values": [
+            35,
+            3,
+            2,
+            48
+          ]
+        },
+        {
+          "action": "sample",
+          "t": 1.5,
+          "joint": "neck_yaw",
+          "values": [
+            35,
+            3,
+            2,
+            48
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "code": "C10002",
+          "actuator_id": "ACT-L-KNEE-112",
+          "joint": "left_knee",
+          "rule": "OVERCURRENT",
+          "threshold": 6.0,
+          "value_at_trigger": 8.0,
+          "units": "A",
+          "first_seen_s": 0.1,
+          "last_seen_s": 1.0,
+          "occurrences": 10,
+          "state": "CONFIRMED",
+          "freeze_frame": {
+            "t": 0.5,
+            "temperature_c": 35.0,
+            "current_a": 8.0,
+            "position_error_deg": 0.0,
+            "voltage_v": 48.0
+          },
+          "severity": "CRITICAL",
+          "comparison": ">",
+          "absolute": false,
+          "bad_samples": 10,
+          "critical_samples": 10,
+          "good_samples": 0,
+          "confirmed_at_s": 0.5,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 8.0
+        },
+        {
+          "code": "C10003",
+          "actuator_id": "ACT-C-NECK-YAW-119",
+          "joint": "neck_yaw",
+          "rule": "POSITION ERROR",
+          "threshold": 1.5,
+          "value_at_trigger": 2.0,
+          "units": "deg",
+          "first_seen_s": 1.1,
+          "last_seen_s": 1.5,
+          "occurrences": 5,
+          "state": "CONFIRMED",
+          "freeze_frame": {
+            "t": 1.5,
+            "temperature_c": 35.0,
+            "current_a": 3.0,
+            "position_error_deg": 2.0,
+            "voltage_v": 48.0
+          },
+          "severity": "WARNING",
+          "comparison": ">",
+          "absolute": true,
+          "bad_samples": 5,
+          "critical_samples": 0,
+          "good_samples": 0,
+          "confirmed_at_s": 1.5,
+          "healed_at_s": null,
+          "confirmed_after_samples": 5,
+          "last_value": 2.0
+        }
+      ]
+    }
+  ]
+}

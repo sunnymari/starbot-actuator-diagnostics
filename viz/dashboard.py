@@ -14,9 +14,11 @@ from rich.table import Table
 from rich.text import Text
 
 from diagnostics.live import LiveFeed
-from sim.actuator import FRAME_TIMEOUT_S
+from diagnostics.config import CONFIG
 
-STATUS_STYLE = {"OK": "green", "WARNING": "bold yellow", "CRITICAL": "bold red"}
+FRAME_TIMEOUT_S = CONFIG["heartbeat_timeout_ms"] / 1000
+
+STATUS_STYLE = {"OK": "green", "WARNING": "bold yellow", "CRITICAL": "bold red", "NO DATA": "bold grey70"}
 
 
 def fmt(value, spec):
@@ -36,8 +38,10 @@ def joint_table(snapshot):
 
     for joint in snapshot["joints"]:
         age = joint["age_s"]
-        age_text = Text(fmt(age and age * 1000, ".0f") + " ms",
+        age_text = Text(fmt(None if age is None else age * 1000, ".0f") + " ms",
                         style="red" if age is not None and age > FRAME_TIMEOUT_S else "dim")
+        if not joint['has_frame']:
+            age_text = Text('waiting for first frame', style='dim')
         status = joint["status"]
         table.add_row(
             f"0x{joint['can_id']:03X}",
@@ -58,7 +62,7 @@ def alert_panel(snapshot):
         lines.append(f"{entry['t']:6.1f}s  ", style="dim")
         lines.append(entry["text"] + "\n", style=STATUS_STYLE[entry["severity"]])
     if not lines:
-        lines.append("no alerts yet (the checks in diagnostics/detector.py return them)", style="dim")
+        lines.append("no DTCs recorded", style="dim")
     return Panel(lines, title="Alerts", border_style="magenta")
 
 

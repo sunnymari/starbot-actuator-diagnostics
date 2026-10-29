@@ -39,7 +39,8 @@ class CurrentDrift(Fault):
         if self.baseline is None:
             self.baseline = actuator.current_a
         if t >= self.start_s:
-            actuator.current_a = self.baseline + self.amps_per_s * (t - self.start_s)
+            # Keep the fault present without overflowing the signed CAN field on long demos.
+            actuator.current_a = min(20.0, self.baseline + self.amps_per_s * (t - self.start_s))
 
 
 class Overheat(Fault):
@@ -56,7 +57,7 @@ class Overheat(Fault):
         if self.baseline is None:
             self.baseline = actuator.temperature_c
         if t >= self.start_s:
-            actuator.temperature_c = self.baseline + self.degrees_per_s * (t - self.start_s)
+            actuator.temperature_c = min(100.0, self.baseline + self.degrees_per_s * (t - self.start_s))
 
 
 class Dropout(Fault):
