@@ -2,7 +2,8 @@
 
 A CAN-bus diagnostics simulator for a humanoid robot's joint actuators.
 It simulates 28 joint actuators that stream telemetry over a (virtual) CAN bus,
-so a diagnostics layer can decode it and later flag faults.
+injects realistic faults, and runs a detector that flags them, shown in a live
+terminal dashboard and a 3D robot view.
 
 ## Setup
 
@@ -59,10 +60,61 @@ Left and right alternate: `0x100` left_shoulder_pitch, `0x101` right_shoulder_pi
 
 Packed with `struct.pack(">hhhH", ...)` in [sim/actuator.py](sim/actuator.py).
 
+## Step 3: fault injection
+
+[sim/faults.py](sim/faults.py) makes joints misbehave over time. The demo scenario
+(compressed so everything happens within about two minutes):
+
+| Starts | Joint             | Fault                                     |
+|--------|-------------------|-------------------------------------------|
+| 5 s    | `left_knee`       | current creeps up 0.05 A/s (wear)         |
+| 15 s   | `right_hip_pitch` | temperature climbs 0.5 °C/s (overheating) |
+| 20 s   | `neck_yaw`        | position error spikes ±3° (encoder glitch)|
+| 30 s   | `left_wrist_roll` | stops sending frames (dropout)            |
+
+```bash
+python -m sim.receiver --faults
+```
+
+Limits the detector checks against live in [sim/actuator.py](sim/actuator.py):
+80 °C, 1.6 × nominal current, 2° position error, 44–52 V, 0.5 s frame timeout.
+
+## Step 4: fault detector
+
+[diagnostics/detector.py](diagnostics/detector.py) gets every frame, keeps the last
+10 s per joint, and runs three checks: thresholds, trends (predicting time to
+limit with a linear fit), and timeouts. Alerts look like:
+
+```
+ACT-L-KNEE-003 | WARNING | overcurrent trend | est. 40 s to limit
+```
+
+## Step 5: live dashboard
+
+```bash
+python -m viz.dashboard
+```
+
+A table of all 28 joints, colored by the detector's status, plus an alert log.
+`--no-faults` runs with every joint healthy.
+
+## Step 6: 3D robot view
+
+```bash
+python -m viz.server
+```
+
+Open http://localhost:8000. Each joint is a marker that turns yellow or red
+when the detector flags it; hover one for its live readings.
+
+Without a model it draws a placeholder robot. To use your own, export a GLB
+from Blender to `viz/web/robot.glb` with an Empty (or bone) named after each
+joint (`left_knee`, `right_hip_pitch`, `neck_yaw`, ...). Markers snap to those.
+
 ## Project layout
 
 ```
-sim/            actuator model, simulator, receiver, hello_can
-diagnostics/    fault detector (Step 4, TODO)
-viz/            visualization (later)
+sim/            actuator model, faults, simulator, receiver, hello_can
+diagnostics/    fault detector, live feed (simulator + bus + detector in one process)
+viz/            terminal dashboard, 3D viewer server, web/ (three.js page)
 ```

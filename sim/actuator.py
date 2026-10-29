@@ -27,6 +27,17 @@ NOMINAL_CURRENT_A = {
     "torso": 5.0,
 }
 
+# Datasheet limits for the simulated actuators. The detector compares against these.
+TEMPERATURE_LIMIT_C = 80.0
+CURRENT_LIMIT_FACTOR = 1.6        # max current = nominal x 1.6 (knee: 5.0 A -> 8.0 A)
+POSITION_ERROR_LIMIT_DEG = 2.0
+VOLTAGE_RANGE_V = (44.0, 52.0)
+FRAME_TIMEOUT_S = 0.5             # frames arrive every 0.1 s, so 0.5 s of silence is a problem
+
+
+def current_limit_a(joint_type):
+    return NOMINAL_CURRENT_A[joint_type] * CURRENT_LIMIT_FACTOR
+
 
 class Actuator:
     """One joint actuator. Each read() returns its sensor values plus a little noise."""
@@ -36,11 +47,12 @@ class Actuator:
         self.can_id = can_id
         self.joint_type = joint_type
 
-        # Healthy baseline values. Step 3 (fault injection) will push these around.
+        # Healthy baseline values. Faults (sim/faults.py) push these around.
         self.temperature_c = 35.0
         self.current_a = NOMINAL_CURRENT_A[joint_type]
         self.position_error_deg = 0.0
         self.voltage_v = 48.0
+        self.online = True  # a Dropout fault sets this to False
 
     def read(self):
         """Return (temperature_c, current_a, position_error_deg, voltage_v) with sensor noise."""
@@ -110,3 +122,4 @@ def build_joints():
 
 JOINTS = build_joints()
 JOINT_BY_ID = {joint.can_id: joint for joint in JOINTS}
+JOINT_BY_NAME = {joint.name: joint for joint in JOINTS}

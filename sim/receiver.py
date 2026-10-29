@@ -11,6 +11,7 @@ import threading
 import can
 
 from sim.actuator import JOINT_BY_ID, JOINTS, decode
+from sim.faults import demo_faults
 from sim.simulator import CHANNEL, run_simulator
 
 
@@ -31,19 +32,24 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cycles", type=int, default=None,
                         help="stop after this many 100 ms cycles (default: run until Ctrl+C)")
+    parser.add_argument("--faults", action="store_true",
+                        help="inject the demo faults from sim/faults.py")
     args = parser.parse_args()
 
     # Open the listening bus first so we don't miss the first frames.
     with can.Bus(interface="virtual", channel=CHANNEL) as bus:
         stop_event = threading.Event()
         sim_thread = threading.Thread(
-            target=run_simulator, args=(stop_event, args.cycles), daemon=True
+            target=run_simulator,
+            args=(stop_event, args.cycles, demo_faults() if args.faults else ()),
+            daemon=True,
         )
         sim_thread.start()
 
         expected = None if args.cycles is None else args.cycles * len(JOINTS)
         received = 0
         try:
+            # A dropped-out joint sends fewer frames, so stop on the timeout instead.
             while expected is None or received < expected:
                 msg = bus.recv(timeout=1.0)
                 if msg is None:

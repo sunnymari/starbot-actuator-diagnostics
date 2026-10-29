@@ -1,23 +1,32 @@
-"""Step 2: every 100 ms, send one CAN frame per joint on the virtual bus."""
+"""Step 2: every 100 ms, send one CAN frame per joint on the virtual bus.
+
+Pass `faults` (see sim/faults.py) to make some joints misbehave over time.
+"""
 
 import threading
 import time
 
 import can
 
-from sim.actuator import JOINTS, encode
+from sim.actuator import JOINT_BY_NAME, JOINTS, encode
 
 CHANNEL = "test"
 PERIOD_S = 0.100  # 100 ms = 10 Hz telemetry
 
 
-def run_simulator(stop_event, cycles=None):
+def run_simulator(stop_event, cycles=None, faults=()):
     """Send all joints every PERIOD_S until stop_event is set (or `cycles` cycles have run)."""
     with can.Bus(interface="virtual", channel=CHANNEL) as bus:
         cycle = 0
-        next_tick = time.monotonic()
+        start = next_tick = time.monotonic()
         while not stop_event.is_set() and (cycles is None or cycle < cycles):
+            elapsed = time.monotonic() - start
+            for fault in faults:
+                fault.apply(JOINT_BY_NAME[fault.joint_name], elapsed)
+
             for joint in JOINTS:
+                if not joint.online:
+                    continue
                 msg = can.Message(
                     arbitration_id=joint.can_id,
                     data=encode(*joint.read()),
